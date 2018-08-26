@@ -1,22 +1,27 @@
 function buscarCandidato() {
     var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function() {
-         if (this.readyState == 4 && this.status == 200) {
-             var div = document.getElementById('divResultado');
-             var myObj = JSON.parse(this.responseText);
-             
-             if(!myObj.dados[0]){
+    xhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            var div = document.getElementById('divResultado');
+            var myObj = JSON.parse(this.responseText);
+
+            if (!myObj.dados[0]) {
+                div.innerHTML = "";
+                $("#divDespesas").removeClass();
+                $("#divDespesas").addClass("invisible");
                 div.innerHTML += "<br/><strong>Nenhum candidato localizado. Esse nome está certo mesmo?</strong><br/><br/>";
-             } else {
+            } else {
                 div.innerHTML = "";
                 div.innerHTML += "<br/><strong>Candidato localizado!</strong><br/><br/>";
                 div.innerHTML += myObj.dados[0].nome;
+                div.innerHTML += "<br/>Partido: " + myObj.dados[0].siglaPartido;
+                div.innerHTML += "<br/>Estado: " + myObj.dados[0].siglaUf;
                 div.innerHTML += "<br/><br/><img src=\"" + myObj.dados[0].urlFoto + "\" alt=\"Smiley face\" height=\"auto\" width=\"auto\"><br/>";
                 var id = myObj.dados[0].id;
                 buscarDespesasCandidato(id);
-             }
-             
-         }
+            }
+
+        }
     };
 
     var nome = document.getElementById('inp').value;
@@ -27,21 +32,24 @@ function buscarCandidato() {
 
 function buscarDespesasCandidato(id) {
     var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function() {
-         if (this.readyState == 4 && this.status == 200) {
-             var divListaDespesas = document.getElementById('divListaDespesas');
-             document.getElementById("divDespesas").classList.remove('invisible');
-             document.getElementById("divDespesas").classList.add('wrap-collabsible');
-             var myObj = JSON.parse(this.responseText);
-             var totalGasto = 0;
-             divListaDespesas.innerHTML += "<strong>Despesas no último ano:</strong>";
-             for (var i = 0; i < myObj.dados.length; i++){
-                 totalGasto += myObj.dados[i].valorLiquido;
-                 var gastoI = myObj.dados[i].tipoDespesa.toLowerCase() + " (" + myObj.dados[i].dataDocumento  + ") - valor: R$" + myObj.dados[i].valorLiquido.toLocaleString('pt-BR');
-                 divListaDespesas.innerHTML += "<p>" + gastoI + "</p>";
-             }
-             divListaDespesas.innerHTML += "<br/><strong>Total gasto: R$" + totalGasto.toLocaleString('pt-BR') + "</strong>";
-         }
+    xhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            var divListaDespesas = document.getElementById('divListaDespesas');
+            var titleDespesas = document.getElementById('titleDespesas');
+            document.getElementById("divDespesas").classList.remove('invisible');
+            document.getElementById("divDespesas").classList.add('wrap-collabsible');
+            var myObj = JSON.parse(this.responseText);
+            var totalGasto = 0;
+            divListaDespesas.innerHTML = "";
+            titleDespesas.innerHTML = "DESPESAS<br/>";
+            titleDespesas.innerHTML += "Período analisado: " + calcularPeriodoDespesas(myObj) + "<br/>";
+            for (var i = 0; i < myObj.dados.length; i++) {
+                totalGasto += myObj.dados[i].valorLiquido;
+                var gastoI = myObj.dados[i].tipoDespesa.toLowerCase() + " (" + myObj.dados[i].dataDocumento + ") - valor: R$" + myObj.dados[i].valorLiquido.toLocaleString('pt-BR');
+                divListaDespesas.innerHTML += "<p>" + gastoI + "</p>";
+            }
+            titleDespesas.innerHTML += "Total gasto: R$" + totalGasto.toLocaleString('pt-BR') + "<br/>";
+        }
     };
 
     var nome = document.getElementById('inp').value;
@@ -50,67 +58,80 @@ function buscarDespesasCandidato(id) {
     xhttp.send();
 }
 
-var TxtType = function(el, toRotate, period) {
-        this.toRotate = toRotate;
-        this.el = el;
-        this.loopNum = 0;
-        this.period = parseInt(period, 10) || 2000;
-        this.txt = '';
-        this.tick();
-        this.isDeleting = false;
-    };
 
-    TxtType.prototype.tick = function() {
-        var i = this.loopNum % this.toRotate.length;
-        var fullTxt = this.toRotate[i];
+function calcularPeriodoDespesas(myObj) {
+    dates = [];
+    for (i = 0; i < myObj.dados.length; i++) { 
+        if(myObj.dados[i].dataDocumento != null)
+            dates.push(new Date(myObj.dados[i].dataDocumento));
+    }
+    var max = new Date(Math.max.apply(null,dates));
+    var min = new Date(Math.min.apply(null,dates));
 
-        if (this.isDeleting) {
+    return min.toLocaleString('pt-BR').substring(1, 10) + " à " + max.toLocaleString('pt-BR').substring(1, 10);
+}
+
+var TxtType = function (el, toRotate, period) {
+    this.toRotate = toRotate;
+    this.el = el;
+    this.loopNum = 0;
+    this.period = parseInt(period, 150) || 2000;
+    this.txt = '';
+    this.tick();
+    this.isDeleting = false;
+};
+
+TxtType.prototype.tick = function () {
+    var i = this.loopNum % this.toRotate.length;
+    var fullTxt = this.toRotate[i];
+
+    if (this.isDeleting) {
         this.txt = fullTxt.substring(0, this.txt.length - 1);
-        } else {
+    } else {
         this.txt = fullTxt.substring(0, this.txt.length + 1);
-        }
+    }
 
-        if(this.loopNum > 2){ //put the size of the array data-type from html file
-            $('#typewrite1').remove();
-            document.getElementById("inpLabel").classList.remove('invisible');
-            document.getElementById("inpLabel").classList.add('inp');
-            document.getElementById("btnBuscar").classList.remove('invisible');
-            document.getElementById("btnBuscar").classList.add('btnBuscar');
-        } else {
-            this.el.innerHTML = '<span class="wrap">'+this.txt+'</span>';
-        }
+    if (this.loopNum > 2) { //put the size of the array data-type from html file
+        $('#typewrite1').remove();
+        document.getElementById("inpLabel").classList.remove('invisible');
+        document.getElementById("inpLabel").classList.add('inp');
+        document.getElementById("btnBuscar").classList.remove('invisible');
+        document.getElementById("btnBuscar").classList.add('btnBuscar');
+    } else {
+        this.el.innerHTML = '<span class="wrap">' + this.txt + '</span>';
+    }
 
-        var that = this;
-        var delta = 100 - Math.random() * 100;
+    var that = this;
+    var delta = 50 - Math.random() * 100;
 
-        if (this.isDeleting) { delta /= 2; }
+    if (this.isDeleting) { delta /= 2; }
 
-        if (!this.isDeleting && this.txt === fullTxt) {
+    if (!this.isDeleting && this.txt === fullTxt) {
         delta = this.period;
         this.isDeleting = true;
-        } else if (this.isDeleting && this.txt === '') {
+    } else if (this.isDeleting && this.txt === '') {
         this.isDeleting = false;
         this.loopNum++;
-        delta = 500;
-        }
+        delta = 100;
+    }
 
-        setTimeout(function() {
+    setTimeout(function () {
         that.tick();
-        }, delta);
-    };
+    }, delta);
+};
 
-    window.onload = function() {
-        var elements = document.getElementsByClassName('typewrite');
-        for (var i=0; i<elements.length; i++) {
-            var toRotate = elements[i].getAttribute('data-type');
-            var period = elements[i].getAttribute('data-period');
-            if (toRotate) {
-              new TxtType(elements[i], JSON.parse(toRotate), period);
-            }
+window.onload = function () {
+    var elements = document.getElementsByClassName('typewrite');
+    for (var i = 0; i < elements.length; i++) {
+        var toRotate = elements[i].getAttribute('data-type');
+        var period = elements[i].getAttribute('data-period');
+        if (toRotate) {
+            new TxtType(elements[i], JSON.parse(toRotate), period);
         }
-        // INJECT CSS
-        var css = document.createElement("style");
-        css.type = "text/css";
-        css.innerHTML = ".typewrite > .wrap { border-right: 0.08em solid #fff}";
-        document.body.appendChild(css);
-    };
+    }
+    // INJECT CSS
+    var css = document.createElement("style");
+    css.type = "text/css";
+    css.innerHTML = ".typewrite > .wrap { border-right: 0.08em solid #fff}";
+    document.body.appendChild(css);
+};

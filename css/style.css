@@ -19,6 +19,10 @@ body {
   display: none;
 }
 
+.imgHeader {
+  text-align: center;
+}
+
 .inp {
   position: relative;
   margin: auto;

@@ -5,12 +5,17 @@ function buscarCandidato() {
              var div = document.getElementById('divResultado');
              var myObj = JSON.parse(this.responseText);
              
-             div.innerHTML = "";
-             div.innerHTML += "<br/><strong>Candidato localizado!</strong><br/><br/>";
-             div.innerHTML += myObj.dados[0].nome;
-             div.innerHTML += "<br/><br/><img src=\"" + myObj.dados[0].urlFoto + "\" alt=\"Smiley face\" height=\"auto\" width=\"auto\"><br/>";
-             var id = myObj.dados[0].id;
-             buscarDetalhesCandidato(id);
+             if(!myObj.dados[0]){
+                div.innerHTML += "<br/><strong>Nenhum candidato localizado. Esse nome está certo mesmo?</strong><br/><br/>";
+             } else {
+                div.innerHTML = "";
+                div.innerHTML += "<br/><strong>Candidato localizado!</strong><br/><br/>";
+                div.innerHTML += myObj.dados[0].nome;
+                div.innerHTML += "<br/><br/><img src=\"" + myObj.dados[0].urlFoto + "\" alt=\"Smiley face\" height=\"auto\" width=\"auto\"><br/>";
+                var id = myObj.dados[0].id;
+                buscarDespesasCandidato(id);
+             }
+             
          }
     };
 
@@ -20,24 +25,27 @@ function buscarCandidato() {
     xhttp.send();
 }
 
-function buscarDetalhesCandidato(id) {
+function buscarDespesasCandidato(id) {
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
          if (this.readyState == 4 && this.status == 200) {
-             var div = document.getElementById('divResultado');
+             var divListaDespesas = document.getElementById('divListaDespesas');
+             document.getElementById("divDespesas").classList.remove('invisible');
+             document.getElementById("divDespesas").classList.add('wrap-collabsible');
              var myObj = JSON.parse(this.responseText);
              var totalGasto = 0;
-             div.innerHTML += "<br/><strong>Despesas no último ano:</strong><br/><br/>";
+             divListaDespesas.innerHTML += "<strong>Despesas no último ano:</strong>";
              for (var i = 0; i < myObj.dados.length; i++){
                  totalGasto += myObj.dados[i].valorLiquido;
-                 div.innerHTML += myObj.dados[i].tipoDespesa.toLowerCase() + " (" + myObj.dados[i].dataDocumento  + ") - valor: R$" + myObj.dados[i].valorLiquido +"<br/>";         
+                 var gastoI = myObj.dados[i].tipoDespesa.toLowerCase() + " (" + myObj.dados[i].dataDocumento  + ") - valor: R$" + myObj.dados[i].valorLiquido.toLocaleString('pt-BR');
+                 divListaDespesas.innerHTML += "<p>" + gastoI + "</p>";
              }
-             div.innerHTML += "<br/><strong>Total gasto: R$" + totalGasto + "</strong><br/><br/>";
+             divListaDespesas.innerHTML += "<br/><strong>Total gasto: R$" + totalGasto.toLocaleString('pt-BR') + "</strong>";
          }
     };
 
     var nome = document.getElementById('inp').value;
-    xhttp.open("GET", "https://dadosabertos.camara.leg.br/api/v2/deputados/" + id + "/despesas?ano=2018&itens=1500&ordem=DESC&ordenarPor=ano", true);
+    xhttp.open("GET", "https://dadosabertos.camara.leg.br/api/v2/deputados/" + id + "/despesas?ano=2018&itens=1500&ordem=DESC&ordenarPor=valorLiquido", true);
     xhttp.setRequestHeader("accept", "application/json");
     xhttp.send();
 }
@@ -63,8 +71,7 @@ var TxtType = function(el, toRotate, period) {
         }
 
         if(this.loopNum > 2){ //put the size of the array data-type from html file
-            var element = document.getElementById("typewrite1");
-            element.parentNode.removeChild(element);
+            $('#typewrite1').remove();
             document.getElementById("inpLabel").classList.remove('invisible');
             document.getElementById("inpLabel").classList.add('inp');
             document.getElementById("btnBuscar").classList.remove('invisible');

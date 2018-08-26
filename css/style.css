@@ -9,10 +9,15 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-* { color:#fff; text-decoration: none;}
+/* * { color:#fff; text-decoration: none;} */
 
+.whiteText{ color:#fff; text-decoration: none;}
 * {
   box-sizing: border-box;
+}
+
+.ui-widget-content {
+  background: #2d2a42;
 }
 
 .invisible {

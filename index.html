@@ -9,16 +9,17 @@
     <meta name="description" content="Scanner Político">
     <meta name="author" content="Grupo07">
 
+    <link rel="stylesheet" href="css/notepaper.css">
     <link rel="stylesheet" href="css/style.css?v=1.0">
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 </head>
 
 <body>
-    
+
     <div class=imgHeader><img src="img/logo.png" alt="" height="100px" width="auto"></div><br/>
 
     <h1 id="typewrite1" class="whiteText">
-        <a href="" class="typewrite whiteText" data-period="1000" data-type='[ "Olá.", "Você acaba de entrar no Scanner Político.", "Aqui você descobrirá se o seu candidato não é só mais um político ineficiente."]'>
+        <a href="" class="typewrite whiteText" data-period="1000" data-type='[ "Olá.", "Você acaba de entrar no Scanner Político.", "Você sabia que os deputados são peça chave na política brasileira?", "Cabe a eles propor, discutir e aprovar leis.", "E até mesmo alterar a Constituição.", "Você tem ideia de quanto os deputados gastam?", "E quais projetos eles estão propondo?", "Aqui você fiscaliza o que eles andaram fazendo nos últimos tempos." ]'>
             <span class="wrap whiteText"></span>
         </a>
     </h1>
@@ -48,11 +49,39 @@
             </div>
         </div>
     </div>
-    
+
+    <br/>
+
+    <div class="invisible" id="notepaper1">
+        <input id="collapsible2" class="toggle" type="checkbox">
+        <label for="collapsible2" id="notepaper1" class="lbl-toggle">Você sabe quanto ganha o brasileiro?</label>
+        <div class="collapsible-content">
+            <div class="content-inner" id="divNotepaper1">
+                O salário médio do brasileiro é de R$2.112,00. Isso condiz com os gastos desse deputado? — Dados <a style="color:white;" href="https://noticias.r7.com/economia/salario-medio-do-brasileiro-cai-em-2017-e-fica-em-r-2112-11042018">IBGE 2018</a>
+            </div>
+        </div>
+    </div>
+
+
+    <br/>
+    <div class="invisible" id="divPropostas">
+        <input id="collapsible3" class="toggle" type="checkbox">
+        <label for="collapsible3" id="titlePropostas" class="lbl-toggle">Ver propostas</label>
+        <div class="collapsible-content">
+            <div class="content-inner" id="divListaPropostas">
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
     <script src="js/scripts.js"></script>
     <script src="js/autocomplete.js"></script>
 </body>
+
+<footer>
+    <div class="footer" id="footer"><br/><br/><br/>v0.1.0
+    </div>
+</footer>
 
 </html>

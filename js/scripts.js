@@ -19,6 +19,11 @@ function buscarCandidato() {
                 div.innerHTML += "<br/><br/><img src=\"" + myObj.dados[0].urlFoto + "\" alt=\"Smiley face\" height=\"auto\" width=\"auto\"><br/>";
                 var id = myObj.dados[0].id;
                 buscarDespesasCandidato(id);
+                buscarPropostasCandidato(id);
+                $("#notepaper1").removeClass();
+                $("#notepaper1").addClass("wrap-collabsible");
+                $('html,body').animate({
+                    scrollTop: $("#footer").offset().top},'slow');
             }
 
         }
@@ -58,6 +63,18 @@ function buscarDespesasCandidato(id) {
     xhttp.send();
 }
 
+function buscarPropostasCandidato(id) {
+    var divListaDespesas = document.getElementById('divListaPropostas');
+    var titlePropostas = document.getElementById('titlePropostas');
+    document.getElementById("divPropostas").classList.remove('invisible');
+    document.getElementById("divPropostas").classList.add('wrap-collabsible');
+    var totalGasto = 0;
+    divListaDespesas.innerHTML = "";
+    titlePropostas.innerHTML = "PROPOSTAS<br/>";
+    divListaDespesas.innerHTML += "Em desenvolvimento.";
+
+}
+
 
 function calcularPeriodoDespesas(myObj) {
     dates = [];
@@ -91,7 +108,7 @@ TxtType.prototype.tick = function () {
         this.txt = fullTxt.substring(0, this.txt.length + 1);
     }
 
-    if (this.loopNum > 2) { //put the size of the array data-type from html file
+    if (this.loopNum > 7) { //put the size of the array data-type from html file
         $('#typewrite1').remove();
         document.getElementById("inpLabel").classList.remove('invisible');
         document.getElementById("inpLabel").classList.add('inp');

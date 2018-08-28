@@ -119,7 +119,7 @@ TxtType.prototype.tick = function () {
     }
 
     var that = this;
-    var delta = 50 - Math.random() * 100;
+    var delta = 170 - Math.random() * 200;
 
     if (this.isDeleting) { delta /= 2; }
 

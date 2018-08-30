@@ -63,18 +63,46 @@ function buscarDespesasCandidato(id) {
     xhttp.send();
 }
 
-function buscarPropostasCandidato(id) {
-    var divListaDespesas = document.getElementById('divListaPropostas');
-    var titlePropostas = document.getElementById('titlePropostas');
-    document.getElementById("divPropostas").classList.remove('invisible');
-    document.getElementById("divPropostas").classList.add('wrap-collabsible');
-    var totalGasto = 0;
-    divListaDespesas.innerHTML = "";
-    titlePropostas.innerHTML = "PROPOSTAS<br/>";
-    divListaDespesas.innerHTML += "Em desenvolvimento.";
 
+function buscarPropostasCandidato(id) {
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            var divListaPropostas = document.getElementById('divListaPropostas');
+            var titlePropostas = document.getElementById('titlePropostas');
+            document.getElementById("divPropostas").classList.remove('invisible');
+            document.getElementById("divPropostas").classList.add('wrap-collabsible');
+            var myObj = JSON.parse(this.responseText);
+            var totalGasto = 0;
+            divListaPropostas.innerHTML = "";
+            titlePropostas.innerHTML = "PROPOSTAS<br/>";
+            for (var i = 0; i < myObj.dados.length; i++) {
+                divListaPropostas.innerHTML += "<p>" + myObj.dados[i].siglaTipo + " " + myObj.dados[i].numero + "</p>";
+                divListaPropostas.innerHTML += "<p>" + myObj.dados[i].ementa + "</p><br/>";
+                buscarDetalhesPropostasCandidato(myObj.dados[i].id);
+            }
+        }
+    };
+    xhttp.open("GET", "https://dadosabertos.camara.leg.br/api/v2/proposicoes?idAutor=" + id + "&ordem=ASC&ordenarPor=id", true);
+    xhttp.setRequestHeader("accept", "application/json");
+    xhttp.send();
 }
 
+function buscarDetalhesPropostasCandidato(idProposta) {
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            var myObj = JSON.parse(this.responseText);
+            var divListaPropostas = document.getElementById('divListaPropostas');
+            for (var i = 0; i < myObj.dados.length; i++) {
+                divListaPropostas.innerHTML += "<p>Temas relacionados: " + myObj.dados[i].keywords + "</p>";
+            }
+        }
+    };
+    xhttp.open("GET", "https://dadosabertos.camara.leg.br/api/v2/proposicoes/" + idProposta, true);
+    xhttp.setRequestHeader("accept", "application/json");
+    xhttp.send();
+}
 
 function calcularPeriodoDespesas(myObj) {
     dates = [];
@@ -119,7 +147,8 @@ TxtType.prototype.tick = function () {
     }
 
     var that = this;
-    var delta = 170 - Math.random() * 200;
+    //var delta = 170 - Math.random() * 200;
+    var delta = 5 - Math.random() * 200;
 
     if (this.isDeleting) { delta /= 2; }
 

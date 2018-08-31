@@ -62,7 +62,7 @@ function compararCandidato() {
             } else {
                 $("#divResultado").addClass("sidebar");
                 $("#divResultado2").addClass("page-wrap");
-                $("#btnBuscar").html('Alterar 2º deputado');
+                $("#btnComparar").html('Alterar 2º deputado');
                 div2.innerHTML = "";
                 div2.innerHTML += "<br/><strong>Deputado localizado!</strong><br/><br/>";
                 div2.innerHTML += myObj.dados[0].nome;
@@ -248,8 +248,8 @@ TxtType.prototype.tick = function () {
     }
 
     var that = this;
-    //var delta = 140 - Math.random() * 200;
-    var delta = 5 - Math.random() * 200;
+    var delta = 140 - Math.random() * 200;
+    //var delta = 5 - Math.random() * 200;
 
     if (this.isDeleting) { delta /= 2; }
 

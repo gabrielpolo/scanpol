@@ -9,10 +9,12 @@ function buscarCandidato() {
                 div.innerHTML = "";
                 $("#divDespesas").removeClass();
                 $("#divDespesas").addClass("invisible");
-                div.innerHTML += "<br/><strong>Nenhum candidato localizado. Esse nome está certo mesmo?</strong><br/><br/>";
+                $("#divPropostas").removeClass();
+                $("#divPropostas").addClass("invisible");
+                div.innerHTML += "<br/><strong>Nenhum deputado localizado. Esse nome está certo mesmo?</strong><br/><br/>";
             } else {
                 div.innerHTML = "";
-                div.innerHTML += "<br/><strong>Candidato localizado!</strong><br/><br/>";
+                div.innerHTML += "<br/><strong>Deputado localizado!</strong><br/><br/>";
                 div.innerHTML += myObj.dados[0].nome;
                 div.innerHTML += "<br/>Partido: " + myObj.dados[0].siglaPartido;
                 div.innerHTML += "<br/>Estado: " + myObj.dados[0].siglaUf;
@@ -20,8 +22,59 @@ function buscarCandidato() {
                 var id = myObj.dados[0].id;
                 buscarDespesasCandidato(id);
                 buscarPropostasCandidato(id);
+                $("#labelBusca").empty();
+                $("#labelBusca").append("Comparar com outro deputado:");
+                $("#btnBuscar").html('Alterar 1º deputado');
+                $("#btnComparar").addClass("btnBuscar");
                 $("#notepaper1").removeClass();
                 $("#notepaper1").addClass("wrap-collabsible");
+                $('html,body').animate({
+                    scrollTop: $("#footer").offset().top},'slow');
+            }
+
+        }
+    };
+
+    var nome = document.getElementById('inp').value;
+    xhttp.open("GET", "https://dadosabertos.camara.leg.br/api/v2/deputados?nome=" + nome + "&ordem=ASC&ordenarPor=nome", true);
+    xhttp.setRequestHeader("accept", "application/json");
+    xhttp.send();
+}
+
+function compararCandidato() {
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            var div2 = document.getElementById('divResultado2');
+            var myObj = JSON.parse(this.responseText);
+
+            if (!myObj.dados[0]) {
+                div2.innerHTML = "";
+                $("#divDespesas").removeClass();
+                $("#divDespesas").addClass("invisible");
+                $("#divPropostas").removeClass();
+                $("#divPropostas").addClass("invisible");
+                $("#divDespesas2").removeClass();
+                $("#divDespesas2").addClass("invisible");
+                $("#divPropostas2").removeClass();
+                $("#divPropostas2").addClass("invisible");
+                div2.innerHTML += "<br/><strong>Nenhum deputado localizado. Esse nome está certo mesmo?</strong><br/><br/>";
+            } else {
+                $("#divResultado").addClass("sidebar");
+                $("#divResultado2").addClass("page-wrap");
+                $("#btnBuscar").html('Alterar 2º deputado');
+                div2.innerHTML = "";
+                div2.innerHTML += "<br/><strong>Deputado localizado!</strong><br/><br/>";
+                div2.innerHTML += myObj.dados[0].nome;
+                div2.innerHTML += "<br/>Partido: " + myObj.dados[0].siglaPartido;
+                div2.innerHTML += "<br/>Estado: " + myObj.dados[0].siglaUf;
+                div2.innerHTML += "<br/><br/><img src=\"" + myObj.dados[0].urlFoto + "\" alt=\"Smiley face\" height=\"auto\" width=\"auto\"><br/>";
+                var id = myObj.dados[0].id;
+                $("#dados1").addClass("sidebar");
+                $("#dados2").removeClass();
+                $("#dados2").addClass("page-wrap");
+                buscarDespesasCandidato2(id);
+                buscarPropostasCandidato2(id);
                 $('html,body').animate({
                     scrollTop: $("#footer").offset().top},'slow');
             }
@@ -63,6 +116,33 @@ function buscarDespesasCandidato(id) {
     xhttp.send();
 }
 
+function buscarDespesasCandidato2(id) {
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            var divListaDespesas = document.getElementById('divListaDespesas2');
+            var titleDespesas = document.getElementById('titleDespesas2');
+            document.getElementById("divDespesas2").classList.remove('invisible');
+            document.getElementById("divDespesas2").classList.add('wrap-collabsible');
+            var myObj = JSON.parse(this.responseText);
+            var totalGasto = 0;
+            divListaDespesas.innerHTML = "";
+            titleDespesas.innerHTML = "DESPESAS<br/>";
+            titleDespesas.innerHTML += "Período analisado: " + calcularPeriodoDespesas(myObj) + "<br/>";
+            for (var i = 0; i < myObj.dados.length; i++) {
+                totalGasto += myObj.dados[i].valorLiquido;
+                var gastoI = myObj.dados[i].tipoDespesa.toLowerCase() + " (" + myObj.dados[i].dataDocumento + ") - valor: R$" + myObj.dados[i].valorLiquido.toLocaleString('pt-BR');
+                divListaDespesas.innerHTML += "<p>" + gastoI + "</p>";
+            }
+            titleDespesas.innerHTML += "Total gasto: R$" + totalGasto.toLocaleString('pt-BR') + "<br/>";
+        }
+    };
+
+    var nome = document.getElementById('inp').value;
+    xhttp.open("GET", "https://dadosabertos.camara.leg.br/api/v2/deputados/" + id + "/despesas?ano=2018&itens=1500&ordem=DESC&ordenarPor=valorLiquido", true);
+    xhttp.setRequestHeader("accept", "application/json");
+    xhttp.send();
+}
 
 function buscarPropostasCandidato(id) {
     var xhttp = new XMLHttpRequest();
@@ -73,13 +153,12 @@ function buscarPropostasCandidato(id) {
             document.getElementById("divPropostas").classList.remove('invisible');
             document.getElementById("divPropostas").classList.add('wrap-collabsible');
             var myObj = JSON.parse(this.responseText);
-            var totalGasto = 0;
             divListaPropostas.innerHTML = "";
             titlePropostas.innerHTML = "PROPOSTAS<br/>";
             for (var i = 0; i < myObj.dados.length; i++) {
                 divListaPropostas.innerHTML += "<p>" + myObj.dados[i].siglaTipo + " " + myObj.dados[i].numero + "</p>";
                 divListaPropostas.innerHTML += "<p>" + myObj.dados[i].ementa + "</p><br/>";
-                buscarDetalhesPropostasCandidato(myObj.dados[i].id);
+                buscarDetalhesPropostasCandidato(myObj.dados[i].id, divListaPropostas);
             }
         }
     };
@@ -88,14 +167,36 @@ function buscarPropostasCandidato(id) {
     xhttp.send();
 }
 
-function buscarDetalhesPropostasCandidato(idProposta) {
+function buscarPropostasCandidato2(id) {
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
+            var divListaPropostas = document.getElementById('divListaPropostas2');
+            var titlePropostas = document.getElementById('titlePropostas2');
+            document.getElementById("divPropostas2").classList.remove('invisible');
+            document.getElementById("divPropostas2").classList.add('wrap-collabsible');
             var myObj = JSON.parse(this.responseText);
-            var divListaPropostas = document.getElementById('divListaPropostas');
+            divListaPropostas.innerHTML = "";
+            titlePropostas.innerHTML = "PROPOSTAS<br/>";
             for (var i = 0; i < myObj.dados.length; i++) {
-                divListaPropostas.innerHTML += "<p>Temas relacionados: " + myObj.dados[i].keywords + "</p>";
+                divListaPropostas.innerHTML += "<p>" + myObj.dados[i].siglaTipo + " " + myObj.dados[i].numero + "</p>";
+                divListaPropostas.innerHTML += "<p>" + myObj.dados[i].ementa + "</p><br/>";
+                buscarDetalhesPropostasCandidato(myObj.dados[i].id, divListaPropostas);
+            }
+        }
+    };
+    xhttp.open("GET", "https://dadosabertos.camara.leg.br/api/v2/proposicoes?idAutor=" + id + "&ordem=ASC&ordenarPor=id", true);
+    xhttp.setRequestHeader("accept", "application/json");
+    xhttp.send();
+}
+
+function buscarDetalhesPropostasCandidato(idProposta, divListaPropostas) {
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            var myObj2 = JSON.parse(this.responseText);
+            for (var i = 0; i < myObj2.dados.length; i++) {
+                divListaPropostas.innerHTML += "<p>Temas relacionados: " + myObj2.dados[i].keywords + "</p>";
             }
         }
     };
@@ -147,7 +248,7 @@ TxtType.prototype.tick = function () {
     }
 
     var that = this;
-    //var delta = 170 - Math.random() * 200;
+    //var delta = 140 - Math.random() * 200;
     var delta = 5 - Math.random() * 200;
 
     if (this.isDeleting) { delta /= 2; }

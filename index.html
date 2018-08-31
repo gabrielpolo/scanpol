@@ -26,32 +26,24 @@
 
     <label for="inp" class="invisible" id="inpLabel">
         <input type="text" id="inp" placeholder="&nbsp;">
-        <span class="label">Digite o nome do seu candidato:</span>
+        <span class="label" id="labelBusca">Digite o nome de um deputado:</span>
         <span class="border"></span>
     </label>
 
     <div>
         <br/>
         <button id="btnBuscar" onclick="buscarCandidato()" class="invisible">Buscar</button>
+        <button id="btnComparar" onclick="compararCandidato()" class="invisible">Buscar 2º deputado</button>
     </div>
 
-    <div id="divResultado">
-        <br/>
-    </div>
-
-    <br/>
-
-    <div class="invisible" id="divDespesas">
-        <input id="collapsible" class="toggle" type="checkbox">
-        <label for="collapsible" id="titleDespesas" class="lbl-toggle">Ver despesas</label>
-        <div class="collapsible-content">
-            <div class="content-inner" id="divListaDespesas">
-            </div>
+    <div id="main" class="main">
+        <div id="divResultado">
+            <br/>
+        </div>
+        <div id="divResultado2">
+                <br/>
         </div>
     </div>
-
-    <br/>
-
     <div class="invisible" id="notepaper1">
         <input id="collapsible2" class="toggle" type="checkbox">
         <label for="collapsible2" id="notepaper1" class="lbl-toggle">Você sabe quanto ganha o brasileiro?</label>
@@ -61,17 +53,48 @@
             </div>
         </div>
     </div>
-
-
     <br/>
-    <div class="invisible" id="divPropostas">
-        <input id="collapsible3" class="toggle" type="checkbox">
-        <label for="collapsible3" id="titlePropostas" class="lbl-toggle">Ver propostas</label>
-        <div class="collapsible-content">
-            <div class="content-inner" id="divListaPropostas">
+    <div id="res1" class="main">
+        <div id="dados1">
+            <div class="invisible" id="divDespesas">
+                <input id="collapsible" class="toggle" type="checkbox">
+                <label for="collapsible" id="titleDespesas" class="lbl-toggle">Ver despesas</label>
+                <div class="collapsible-content">
+                    <div class="content-inner" id="divListaDespesas">
+                    </div>
+                </div>
+            </div>
+            <br/>
+            <div class="invisible" id="divPropostas">
+                <input id="collapsible3" class="toggle" type="checkbox">
+                <label for="collapsible3" id="titlePropostas" class="lbl-toggle">Ver propostas</label>
+                <div class="collapsible-content">
+                    <div class="content-inner" id="divListaPropostas">
+                    </div>
+                </div>
             </div>
         </div>
+        <div id="dados2" class="invisible">
+            <div class="invisible" id="divDespesas2">
+                    <input id="collapsible4" class="toggle" type="checkbox">
+                    <label for="collapsible4" id="titleDespesas2" class="lbl-toggle">Ver despesas</label>
+                    <div class="collapsible-content">
+                        <div class="content-inner" id="divListaDespesas2">
+                        </div>
+                    </div>
+                </div>
+                <br/>
+                <div class="invisible" id="divPropostas2">
+                    <input id="collapsible6" class="toggle" type="checkbox">
+                    <label for="collapsible6" id="titlePropostas2" class="lbl-toggle">Ver propostas</label>
+                    <div class="collapsible-content">
+                        <div class="content-inner" id="divListaPropostas2">
+                        </div>
+                    </div>
+                </div>
+        </div>
     </div>
+    <br/>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
@@ -80,7 +103,7 @@
 </body>
 
 <footer>
-    <div class="footer" id="footer"><br/><br/><br/>v0.1.0
+    <div class="footer" id="footer"><br/><br/><br/><a href="version.html" style="color:white;">v0.2.0</a>
     </div>
 </footer>
 

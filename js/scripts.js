@@ -36,9 +36,18 @@ function buscarCandidato() {
     };
 
     var nome = document.getElementById('inp').value;
-    xhttp.open("GET", "https://dadosabertos.camara.leg.br/api/v2/deputados?nome=" + nome + "&ordem=ASC&ordenarPor=nome", true);
-    xhttp.setRequestHeader("accept", "application/json");
-    xhttp.send();
+    if(nome == ""){
+        $("#divDespesas").removeClass();
+        $("#divDespesas").addClass("invisible");
+        $("#divPropostas").removeClass();
+        $("#divPropostas").addClass("invisible");
+        var div = document.getElementById('divResultado');
+        div.innerHTML += "<br/><strong>Preencha com o nome de um deputado!</strong><br/><br/>";        
+    } else{
+        xhttp.open("GET", "https://dadosabertos.camara.leg.br/api/v2/deputados?nome=" + nome + "&ordem=ASC&ordenarPor=nome", true);
+        xhttp.setRequestHeader("accept", "application/json");
+        xhttp.send();
+    }
 }
 
 function compararCandidato() {
@@ -83,9 +92,23 @@ function compararCandidato() {
     };
 
     var nome = document.getElementById('inp').value;
-    xhttp.open("GET", "https://dadosabertos.camara.leg.br/api/v2/deputados?nome=" + nome + "&ordem=ASC&ordenarPor=nome", true);
-    xhttp.setRequestHeader("accept", "application/json");
-    xhttp.send();
+    if(nome == ""){
+        var div2 = document.getElementById('divResultado2');
+        div2.innerHTML = "";
+        $("#divDespesas").removeClass();
+        $("#divDespesas").addClass("invisible");
+        $("#divPropostas").removeClass();
+        $("#divPropostas").addClass("invisible");
+        $("#divDespesas2").removeClass();
+        $("#divDespesas2").addClass("invisible");
+        $("#divPropostas2").removeClass();
+        $("#divPropostas2").addClass("invisible");
+        div2.innerHTML += "<br/><strong>Preencha com o nome de um deputado!</strong><br/><br/>";        
+    } else {
+        xhttp.open("GET", "https://dadosabertos.camara.leg.br/api/v2/deputados?nome=" + nome + "&ordem=ASC&ordenarPor=nome", true);
+        xhttp.setRequestHeader("accept", "application/json");
+        xhttp.send();
+    }
 }
 
 function buscarDespesasCandidato(id) {
@@ -227,6 +250,7 @@ function pularIntroducao(){
     document.getElementById("btnBuscar").classList.add('btnBuscar');
 }
 
+//scripts para o texto de introducao
 var TxtType = function (el, toRotate, period) {
     this.toRotate = toRotate;
     this.el = el;
@@ -249,6 +273,7 @@ TxtType.prototype.tick = function () {
 
     if (this.loopNum > 7) { //put the size of the array data-type from html file
         $('#typewrite1').remove();
+        $('#pularIntroducao').remove();
         document.getElementById("inpLabel").classList.remove('invisible');
         document.getElementById("inpLabel").classList.add('inp');
         document.getElementById("btnBuscar").classList.remove('invisible');

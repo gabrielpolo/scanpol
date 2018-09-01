@@ -217,6 +217,16 @@ function calcularPeriodoDespesas(myObj) {
     return min.toLocaleString('pt-BR').substring(1, 10) + " à " + max.toLocaleString('pt-BR').substring(1, 10);
 }
 
+function pularIntroducao(){
+    $('#pularIntroducao').remove();
+    $("#typewrite1").removeClass();
+    $("#typewrite1").addClass("invisible");
+    document.getElementById("inpLabel").classList.remove('invisible');
+    document.getElementById("inpLabel").classList.add('inp');
+    document.getElementById("btnBuscar").classList.remove('invisible');
+    document.getElementById("btnBuscar").classList.add('btnBuscar');
+}
+
 var TxtType = function (el, toRotate, period) {
     this.toRotate = toRotate;
     this.el = el;
